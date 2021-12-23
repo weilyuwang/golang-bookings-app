@@ -1,7 +1,6 @@
 package render
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/justinas/nosurf"
 	"github.com/weilyuwang/golang-bookings-app/internal/config"
@@ -46,17 +45,12 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *mod
 		log.Fatal("Could not get template from template cache")
 	}
 
-	buf := new(bytes.Buffer)
-
+	// render template with template data
 	td = AddDefaultData(td, r)
-
-	_ = t.Execute(buf, td)
-
-	_, err := buf.WriteTo(w)
+	err := t.Execute(w, td)
 	if err != nil {
 		fmt.Println("error writing template to browser", err)
 	}
-
 }
 
 // CreateTemplateCache creates a template cache as a map
