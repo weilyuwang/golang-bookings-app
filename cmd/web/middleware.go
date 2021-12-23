@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// NoSurf is the csrf protection middleware
+// NoSurf is the csrf protection middleware (add `csrf_token` in the cookie)
 func NoSurf(next http.Handler) http.Handler {
 	csrfHandler := nosurf.New(next)
 

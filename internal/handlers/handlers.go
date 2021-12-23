@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/weilyuwang/golang-bookings-app/internal/config"
 	"github.com/weilyuwang/golang-bookings-app/internal/models"
 	"github.com/weilyuwang/golang-bookings-app/internal/render"
@@ -68,4 +69,21 @@ func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
 // Availability renders the search availability page
 func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "search-availability.page.tmpl", &models.TemplateData{})
+}
+
+// PostAvailability handles post
+func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
+	start := r.Form.Get("start")
+	end := r.Form.Get("end")
+	w.Write([]byte(fmt.Sprintf("start date is %s and end is %s", start, end)))
+}
+
+type jsonResponse struct {
+	OK      bool   `json:"ok"`
+	Message string `json:"message"`
+}
+
+// Reservation renders the make a reservation page and displays form
+func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
 }
