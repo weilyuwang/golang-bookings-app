@@ -1,6 +1,7 @@
 package render
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/justinas/nosurf"
 	"github.com/weilyuwang/golang-bookings-app/internal/config"
@@ -46,8 +47,13 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *mod
 	}
 
 	// render template with template data
+	buf := new(bytes.Buffer)
+
 	td = AddDefaultData(td, r)
-	err := t.Execute(w, td)
+
+	_ = t.Execute(buf, td)
+
+	_, err := buf.WriteTo(w)
 	if err != nil {
 		fmt.Println("error writing template to browser", err)
 	}
