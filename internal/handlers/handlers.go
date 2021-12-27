@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/weilyuwang/golang-bookings-app/internal/config"
+	"github.com/weilyuwang/golang-bookings-app/internal/driver"
 	"github.com/weilyuwang/golang-bookings-app/internal/forms"
 	"github.com/weilyuwang/golang-bookings-app/internal/helpers"
 	"github.com/weilyuwang/golang-bookings-app/internal/models"
 	"github.com/weilyuwang/golang-bookings-app/internal/render"
+	"github.com/weilyuwang/golang-bookings-app/internal/repository"
+	"github.com/weilyuwang/golang-bookings-app/internal/repository/dbrepo"
 	"net/http"
 )
 
@@ -17,12 +20,14 @@ var Repo *Repository
 // Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
