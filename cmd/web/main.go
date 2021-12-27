@@ -55,7 +55,11 @@ func run() (*driver.DB, error) {
 	app.ErrorLog = errorLog
 
 	// what am I going to put in the session
+	// Types that will be transferred as implementations of interface values need to be registered.
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
 
 	// set up the session
 	session = scs.New()
@@ -83,7 +87,7 @@ func run() (*driver.DB, error) {
 
 	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 	helpers.NewHelpers(&app)
 
 	return db, nil
