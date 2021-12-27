@@ -31,7 +31,7 @@ func main() {
 	}
 	defer db.SQL.Close()
 
-	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
+	log.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
 	srv := &http.Server{
 		Addr:    portNumber,
@@ -66,12 +66,12 @@ func run() (*driver.DB, error) {
 	app.Session = session
 
 	// connect to database
-	log.Println("Connecting to database...")
 	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=weilyuwang password=")
 	if err != nil {
 		log.Fatal("Cannot connect to database")
 		return nil, err
 	}
+	log.Println("Connected to database")
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
