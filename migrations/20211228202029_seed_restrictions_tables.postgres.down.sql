@@ -1,1 +1,1 @@
-delete from restrictions
+delete from restrictions;
