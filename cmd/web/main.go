@@ -31,6 +31,12 @@ func main() {
 	}
 	defer db.SQL.Close()
 
+	defer close(app.MailChan)
+
+	log.Println("Starting mail listener")
+
+	listenForMail()
+
 	log.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
 	srv := &http.Server{
@@ -53,6 +59,9 @@ func run() (*driver.DB, error) {
 
 	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	app.ErrorLog = errorLog
+
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
 
 	// what am I going to put in the session
 	// Types that will be transferred as implementations of interface values need to be registered.
