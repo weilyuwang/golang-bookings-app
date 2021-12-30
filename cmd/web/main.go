@@ -73,7 +73,7 @@ func run() (*driver.DB, error) {
 	// set up the session
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
-	session.Cookie.Name = "session_id"
+	//session.Cookie.Name = "session_id"
 	session.Cookie.Persist = true
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.InProduction
