@@ -418,8 +418,12 @@ func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
 
 	form := forms.New(r.PostForm)
 	form.Required("email", "password")
+	form.IsEmail("email")
 	if !form.Valid() {
-		// TODO - take user back to page
+		render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+		})
+		return
 	}
 
 	email := form.Get("email")
