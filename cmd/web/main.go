@@ -71,6 +71,8 @@ func run() (*driver.DB, error) {
 	gob.Register(models.Restriction{})
 
 	// set up the session
+	// In production, we should probably not use cookie to store session,
+	// instead, we should use something like Redis, etc.
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 	//session.Cookie.Name = "session_id"
