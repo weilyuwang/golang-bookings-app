@@ -64,6 +64,11 @@
   --bs-body-bg: #fff;
 }
 
+.admin-navbar-top-right {
+  position: fixed;
+  right: 0;
+}
+
 *,
 *::before,
 *::after {
