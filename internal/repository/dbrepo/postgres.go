@@ -298,7 +298,7 @@ func (m *postgresDBRepo) AllNewReservations() ([]models.Reservation, error) {
 			rm.id, rm.room_name
 		from reservations r 
 		left join rooms rm on (r.room_id = rm.id)
-		where processed = 0
+		where r.processed = 0
 		order by r.start_date asc`
 
 	rows, err := m.DB.QueryContext(ctx, query)
