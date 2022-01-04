@@ -6,3 +6,5 @@ bookings
 
 # database config file (used by Soda CLI)
 database.yml
+
+run.sh
