@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/gob"
+	"flag"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/weilyuwang/golang-bookings-app/internal/config"
@@ -51,8 +52,25 @@ func main() {
 }
 
 func run() (*driver.DB, error) {
-	// change this to true when in production
-	app.InProduction = false
+	// read flags
+	inProduction := flag.Bool("production", true, "Application is in production")
+	useCache := flag.Bool("cache", true, "Use template cache")
+	dbHost := flag.String("dbhost", "localhost", "Database host")
+	dbName := flag.String("dbname", "", "Database name")
+	dbUser := flag.String("dbuser", "", "Database user")
+	dbPass := flag.String("dbpass", "", "Database password")
+	dbPort := flag.String("dbport", "5432", "Database port")
+	dbSSL := flag.String("dbssl", "disable", "Database SSL settings (disable, prefer, require)")
+
+	flag.Parse()
+
+	if *dbName == "" || *dbUser == "" {
+		fmt.Println("Missing required flags")
+		os.Exit(1)
+	}
+
+	app.InProduction = *inProduction
+	app.UseCache = *useCache
 
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog
@@ -83,7 +101,11 @@ func run() (*driver.DB, error) {
 	app.Session = session
 
 	// connect to database
-	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=weilyuwang password=")
+	connectionString := fmt.Sprintf(
+		"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
+		*dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSSL)
+
+	db, err := driver.ConnectSQL(connectionString)
 	if err != nil {
 		log.Fatal("Cannot connect to database")
 		return nil, err
@@ -96,7 +118,6 @@ func run() (*driver.DB, error) {
 		return nil, err
 	}
 	app.TemplateCache = tc
-	app.UseCache = false
 
 	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
