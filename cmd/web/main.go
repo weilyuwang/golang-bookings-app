@@ -64,9 +64,26 @@ func run() (*driver.DB, error) {
 
 	flag.Parse()
 
-	if *dbName == "" || *dbUser == "" {
+	// TODO remove this
+	//os.Setenv("DATABASE_URL", "postgresql://localhost:5432/bookings")
+
+	//Checking that an environment variable is present or not.
+	dbURL, ok := os.LookupEnv("DATABASE_URL")
+
+	// Build database connection string
+	var connectionString string
+
+	if ok {
+		log.Println("Found DATABASE_URL env variable")
+		connectionString = dbURL
+	} else if *dbName == "" || *dbUser == "" {
 		fmt.Println("Missing required flags")
 		os.Exit(1)
+	} else {
+		log.Println("Found DB Flags")
+		connectionString = fmt.Sprintf(
+			"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
+			*dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSSL)
 	}
 
 	app.InProduction = *inProduction
@@ -101,10 +118,6 @@ func run() (*driver.DB, error) {
 	app.Session = session
 
 	// connect to database
-	connectionString := fmt.Sprintf(
-		"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
-		*dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSSL)
-
 	db, err := driver.ConnectSQL(connectionString)
 	if err != nil {
 		log.Fatal("Cannot connect to database")
